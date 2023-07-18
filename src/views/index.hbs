@@ -1,0 +1,47 @@
+<div class="col-md-6">
+  <div class="card">
+    <div class="card-header bg-primary text-light">
+      <h5 class="card-title">Chat List</h5>
+    </div>
+    <div class="card-body" style="height: calc(100vh - 80px); overflow-y: auto;">
+      {{#if loading}}
+        <p>Loading...</p>
+      {{else if error}}
+        <p>Error: {{errorMessage}}</p>
+      {{else}}
+        <ul class="list-group">
+          {{#each chats}}
+            <li class="list-group-item">
+              <div class="{{#if isSelected}}bg-light{{else}}bg-white{{/if}}">
+                <a href="javascript:void(0);" class="text-decoration-none" onclick="onChatItemClick('{{id}}')">{{name}}</a>
+              </div>
+            </li>
+          {{/each}}
+        </ul>
+      {{/if}}
+    </div>
+  </div>
+</div>
+
+<script>
+  // Función para procesar el clic en un chat de la lista
+  function onChatItemClick(chatId) {
+    loadChatMessages(chatId);
+  }
+
+  // Función para cargar los mensajes del chat seleccionado
+  function loadChatMessages(chatId) {
+    fetch(`/chat/${chatId}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          window.location.href = `/chat/${chatId}`;
+        } else {
+          console.error(data.error);
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+</script>
